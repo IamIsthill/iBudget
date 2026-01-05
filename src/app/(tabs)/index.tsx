@@ -1,17 +1,30 @@
 import { Text, View } from "react-native";
-import "@/assets/global.css";
+import "@/src/assets/global.css";
+import { AccountWidget } from "@/src/features/account";
+import { useMigration } from "@/src/db";
 
 export default function Index() {
+  const { error, success } = useMigration();
+
+  if (error) {
+    return (
+      <View>
+        <Text>Migration error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!success) {
+    return (
+      <View>
+        <Text>Migration is in progress...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View
-    // style={{
-    //   flex: 1,
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    // }}
-    // className="flex-1 bg-black"
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View>
+      <AccountWidget />
     </View>
   );
 }
