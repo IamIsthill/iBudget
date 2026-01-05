@@ -3,9 +3,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { AddAccountModal } from "./AddAccountModal";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { AccountDB } from "../api";
+import { useRouter } from "expo-router";
 
 export function AccountWidget() {
   const { data: accounts } = useLiveQuery(AccountDB.getAll());
+  const router = useRouter();
 
   return (
     <View className="bg-white shadow-lg rounded-xl m-4 p-4">
@@ -26,7 +28,10 @@ export function AccountWidget() {
               className="flex-row justify-between items-center p-3 mb-2 bg-gray-50 rounded-lg shadow-sm"
               android_ripple={{ color: "#e2e8f0" }}
               onPress={() => {
-                console.log("Edit account:", item.id);
+                router.push({
+                  pathname: "/accounts/[accountId]",
+                  params: { accountId: item.id },
+                });
               }}
             >
               {/* Left side: Icon + Name */}
