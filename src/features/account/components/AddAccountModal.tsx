@@ -3,6 +3,7 @@ import { Modal, Pressable, Text, TextInput, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ModalBackdrop, ModalContent } from "@/src/shared/components/Modal";
 import { AccountDB } from "../api";
+import { AppError } from "@/src/shared/error";
 
 export function AddAccountModal() {
   const [showModal, setShowModal] = useState(false);
@@ -11,23 +12,35 @@ export function AddAccountModal() {
     balance: "",
   });
 
+  const resetForm = () => {
+    setForm({ name: "", balance: "" });
+  };
+
   const onSave = async () => {
-    // Validations
-    if (!form.name.trim()) {
-      alert("Account name is required");
-      return;
-    }
-    const balance = parseFloat(form.balance);
-    if (isNaN(balance) || balance < 0) {
-      alert("Balance must be a positive number");
-      return;
-    }
     try {
+      // Validations
+      if (!form.name.trim()) {
+        throw new AppError("Account name is required");
+      }
+      const balance = parseFloat(form.balance);
+      if (isNaN(balance) || balance < 0) {
+        throw new AppError("Balance must be a positive number");
+      }
       await AccountDB.add(form.name, balance);
+      resetForm();
       setShowModal(false);
     } catch (error) {
-      console.error(error);
+      if (error instanceof AppError) {
+        alert(error.message);
+      } else {
+        alert("Failed to add new account");
+      }
     }
+  };
+
+  const onCancel = () => {
+    setShowModal(false);
+    resetForm();
   };
 
   return (
@@ -85,7 +98,7 @@ export function AddAccountModal() {
             <View className="flex-row justify-end gap-3 border-red">
               <Pressable
                 className="bg-gray-200 px-4 py-2 rounded-lg"
-                onPress={() => setShowModal(false)}
+                onPress={onCancel}
               >
                 <Text className="text-gray-60">Cancel</Text>
               </Pressable>

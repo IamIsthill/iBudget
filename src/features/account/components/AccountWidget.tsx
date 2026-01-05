@@ -5,14 +5,13 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { AccountDB } from "../api";
 
 export function AccountWidget() {
-  // Live query from Drizzle
   const { data: accounts } = useLiveQuery(AccountDB.getAll());
 
   return (
-    <View className="bg-white shadow-md m-2 rounded-lg p-4">
+    <View className="bg-white shadow-lg rounded-xl m-4 p-4">
       {/* Header */}
-      <View className="flex flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold">Your Accounts</Text>
+      <View className="flex flex-row justify-between items-center mb-4">
+        <Text className="text-xl font-bold text-gray-800">Your Accounts</Text>
         <AddAccountModal />
       </View>
 
@@ -21,18 +20,35 @@ export function AccountWidget() {
         <FlatList
           data={accounts}
           keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 8 }}
           renderItem={({ item }) => (
-            <View className="flex flex-row justify-between items-center py-2 border-b border-gray-200">
-              <Text className="text-base font-medium">{item.name}</Text>
-              <Text className="text-base font-semibold">
+            <Pressable
+              className="flex-row justify-between items-center p-3 mb-2 bg-gray-50 rounded-lg shadow-sm"
+              android_ripple={{ color: "#e2e8f0" }}
+              onPress={() => {
+                console.log("Edit account:", item.id);
+              }}
+            >
+              {/* Left side: Icon + Name */}
+              <View className="flex-row items-center gap-3">
+                <View className="w-10 h-10 bg-blue-100 rounded-full items-center justify-center">
+                  <Ionicons name="wallet-outline" size={20} color="#2563eb" />
+                </View>
+                <Text className="text-base font-medium text-gray-800">
+                  {item.name}
+                </Text>
+              </View>
+
+              {/* Right side: Balance */}
+              <Text className="text-base font-bold text-gray-900">
                 ₱{item.balance!.toLocaleString()}
               </Text>
-            </View>
+            </Pressable>
           )}
         />
       ) : (
-        <View className="py-4 items-center">
-          <Text className="text-gray-400">No accounts yet.</Text>
+        <View className="py-6 items-center">
+          <Text className="text-gray-400 text-base">No accounts yet.</Text>
         </View>
       )}
     </View>
