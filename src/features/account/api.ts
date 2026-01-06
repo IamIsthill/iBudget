@@ -1,11 +1,12 @@
+import { eq } from "drizzle-orm";
+
 import { db } from "@/src/db";
 import { accountsTable } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
-import * as Crypto from "expo-crypto";
+import { uuid } from "@/src/shared/utils/uuid";
 
 export class AccountDB {
   static async add(name: string, balance = 0) {
-    const id = Crypto.randomUUID();
+    const id = uuid();
     return await db
       .insert(accountsTable)
       .values({ id, name, balance })
