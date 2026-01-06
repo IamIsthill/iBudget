@@ -1,6 +1,7 @@
-import { db } from ".";
+// import { db } from ".";
 import { AppError } from "../shared/error";
 import { uuid } from "../shared/utils/uuid";
+import { db } from "./db";
 import { categoriesTable, Necessity } from "./schema";
 
 const defaultCategories: {
@@ -33,22 +34,20 @@ const defaultCategories: {
   },
 ];
 
-async function seedCategories() {
-  try {
-    const mappedCategories = defaultCategories.map(async (category) => {
-      const id = uuid();
-      await db.insert(categoriesTable).values({ ...category, id });
-    });
-
-    await Promise.all(mappedCategories);
-  } catch {
-    throw new AppError("Failed to seed categories");
-  }
-}
-
 export async function seedData() {
   try {
-    await seedCategories();
+    const existing = await db.select().from(categoriesTable).limit(1);
+
+    if (existing.length > 0) return;
+
+    await db.transaction(async (tx) => {
+      for (const category of defaultCategories) {
+        await tx.insert(categoriesTable).values({
+          id: uuid(),
+          ...category,
+        });
+      }
+    });
   } catch (err) {
     if (err instanceof AppError) {
       throw err;
