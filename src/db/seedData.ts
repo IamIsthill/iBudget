@@ -2,7 +2,6 @@ import { db } from ".";
 import { AppError } from "../shared/error";
 import { uuid } from "../shared/utils/uuid";
 import { categoriesTable, Necessity } from "./schema";
-import * as Crypto from "expo-crypto";
 
 const defaultCategories: {
   name: string;
