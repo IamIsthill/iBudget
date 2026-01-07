@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Pressable, Text, TextInput, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ModalBackdrop, ModalContent } from "@/src/shared/components/Modal";
-import { AccountDB } from "../api";
+import { AccountDB } from "@/src/db";
 import { AppError } from "@/src/shared/error";
 
 export function AddAccountModal() {

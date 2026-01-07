@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { AccountDB } from "../api";
 import { useRouter } from "expo-router";
+import { AccountDB } from "@/src/db";
 
 type EditAccountScreenProps = {
   accountId: string;
