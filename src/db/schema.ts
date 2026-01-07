@@ -12,10 +12,15 @@ export enum Necessity {
   NEEDS = "needs",
   WANTS = "wants",
 }
+
 export const accountsTable = d.sqliteTable("accounts", {
   id: d.text("id").primaryKey(),
   name: d.text("name").notNull(),
-  balance: d.integer().default(0),
+  balance: d.integer("balance").default(0).notNull(),
+  isDefault: d
+    .integer("is_default", { mode: "boolean" })
+    .default(false)
+    .notNull(),
 });
 
 export const categoriesTable = d.sqliteTable("categories", {
@@ -26,15 +31,17 @@ export const categoriesTable = d.sqliteTable("categories", {
 
 export const transactionsTable = d.sqliteTable("transactions", {
   id: d.text("id").primaryKey().notNull(),
-  accountId: d
-    .text("accountId")
+  fromAccountId: d
+    .text("fromAccountId")
     .notNull()
+    .references(() => accountsTable.id, { onDelete: "set null" }),
+  toAccountId: d
+    .text("toAccountId")
     .references(() => accountsTable.id, { onDelete: "set null" }),
   categoryId: d
     .text("categoryId")
-    .notNull()
     .references(() => categoriesTable.id, { onDelete: "set null" }),
-  necessity: d.text("necessity").notNull(), // 'must' | 'needs' | 'wants'
+  necessity: d.text("necessity"), // 'must' | 'needs' | 'wants'
   amount: d.integer().notNull(), // positive for income, negative for expense
   type: d.text("type").notNull(), // 'income' | 'expense' | 'transfer'
   date: d.integer("date").notNull(), // timestamp

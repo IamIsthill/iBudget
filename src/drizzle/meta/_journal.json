@@ -15,6 +15,20 @@
       "when": 1767679400779,
       "tag": "0001_striped_shotgun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1767769858329,
+      "tag": "0002_red_spirit",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1767788350349,
+      "tag": "0003_far_loki",
+      "breakpoints": true
     }
   ]
 }

@@ -12,3 +12,14 @@ export interface Category {
   name: string;
   necessity: null | Necessity | string;
 }
+
+export interface Transaction {
+  id: string;
+  accountId: string;
+  categoryId?: string | null;
+  necessity?: string | null;
+  amount: number;
+  type: string;
+  date: number;
+  description: string;
+}

@@ -1,46 +1,38 @@
 import { Stack } from "expo-router";
-import { useMigration } from "@/src/db";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import { seedData } from "@/src/db/seedData";
+import { View, Text } from "react-native";
+import { useDatabaseSetup } from "../db";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+// import { NavigationContainer } from "@react-navigation/native";
 
 export default function RootLayout() {
-  const { error, success } = useMigration();
-  const [seeded, setSeeded] = useState(false);
-
-  useEffect(() => {
-    if (success && !seeded) {
-      (async () => {
-        try {
-          await seedData();
-          setSeeded(true);
-        } catch (err) {
-          console.error("Seeding failed", err);
-        }
-      })();
-    }
-  }, [success, seeded]);
+  const { ready, error } = useDatabaseSetup();
 
   if (error) {
     return (
-      <View>
-        <Text>Migration error: {error.message}</Text>
+      <View className="flex justify-center align-middle">
+        <Text>Database error: {error.message}</Text>;
       </View>
     );
   }
 
-  if (!success || !seeded) {
+  if (!ready) {
     return (
-      <View>
-        <Text>Preparing database...</Text>
-      </View>
+      <Text className="flex justify-center align-middle">
+        Setting up database...
+      </Text>
     );
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="accounts/[accountId]" options={{ title: "" }} />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="accounts/[accountId]" options={{ title: "" }} />
+        <Stack.Screen
+          name="transactions/add"
+          options={{ title: "", presentation: "card" }}
+        />
+      </Stack>
+    </SafeAreaProvider>
   );
 }

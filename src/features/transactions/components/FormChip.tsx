@@ -26,7 +26,7 @@ export function FormChip({
   return (
     <Pressable
       onPress={handlePress}
-      className={`items-center justify-center p-3 rounded-2xl w-[30%] border ${active ? "border-blue-100 bg-blue-50" : "border-gray-100 bg-white"}`}
+      className={`items-center justify-center p-3 rounded-2xl flex-1 border ${active ? "border-blue-100 bg-blue-50" : "border-gray-100 bg-white"}`}
     >
       <Ionicons name={icon} size={20} color={active ? "#2563eb" : "#6b7280"} />
       <Text
