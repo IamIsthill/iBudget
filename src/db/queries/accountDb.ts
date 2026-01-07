@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm";
-
 import { db } from "@/src/db";
 import { accountsTable } from "@/src/db/schema";
 import { uuid } from "@/src/shared/utils/uuid";

@@ -2,8 +2,8 @@ import { FlatList, Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AddAccountModal } from "./AddAccountModal";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { AccountDB } from "../api";
 import { useRouter } from "expo-router";
+import { AccountDB } from "@/src/db";
 
 export function AccountWidget() {
   const { data: accounts } = useLiveQuery(AccountDB.getAll());
