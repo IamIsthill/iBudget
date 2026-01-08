@@ -1,18 +1,22 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Dimensions, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { formatPeso } from "../utils";
 import { useTransactionContext } from "../context/TransactionContext";
 import { KeypadArea } from "./KeypadArea";
 import { MetadataSelectors } from "./MetadataSelectors";
+import { Ionicons } from "@expo/vector-icons";
+import { SaveButton } from "./SaveButton";
 
-export function CreateTransactionScreen() {
-  const { draft, saveTransaction } = useTransactionContext();
+const { width } = Dimensions.get("window");
+
+export function DisplayArea() {
+  const { draft } = useTransactionContext();
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      <View className="flex-1 items-center justify-center px-6">
-        <Text className="text-gray-400 font-medium uppercase tracking-widest mb-2">
+    <View className="items-center px-6 gap-6">
+      <View className="items-center gap-4">
+        <Text className="text-gray-400 font-medium uppercase tracking-widest">
           {draft.type} Amount
         </Text>
         <View className="flex-row items-baseline">
@@ -23,35 +27,46 @@ export function CreateTransactionScreen() {
         </View>
       </View>
 
-      {/* 2. Transaction Type (Income/Expense/Transfer) */}
-      <View className="px-6 mb-4">
-        <TransactionTypeSelector />
+      {/* Subtle Hint */}
+      <View className="flex-row items-center opacity-20">
+        <Text className="text-[10px] font-bold tracking-widest mr-2">
+          MORE DETAILS
+        </Text>
+        <Ionicons name="arrow-forward" size={12} color="#000" />
       </View>
+    </View>
+  );
+}
 
-      {/* 3. Metadata Selectors (Account, Category, Necessity) */}
-      <MetadataSelectors />
-
-      {/* 5. Keypad Area */}
-      <View className="bg-gray-50 border-t border-gray-100 px-4 pt-4 pb-8">
-        <KeypadArea />
-
-        <Pressable
-          disabled={!draft.amount || draft.amount === "0"}
-          className={`mt-4 h-16 rounded-2xl items-center justify-center shadow-sm ${
-            !draft.amount || draft.amount === "0"
-              ? "bg-gray-200"
-              : "bg-blue-600"
-          }`}
-          onPress={saveTransaction}
-        >
-          <Text
-            className={`text-lg font-bold ${!draft.amount || draft.amount === "0" ? "text-gray-400" : "text-white"}`}
-          >
-            Save{" "}
-            {draft.type.charAt(0).toUpperCase() +
-              draft.type.slice(1).toLowerCase()}
-          </Text>
-        </Pressable>
+export function CreateTransactionScreen() {
+  return (
+    <SafeAreaView className="flex-1 bg-white" edges={[]}>
+      <View className="py-4 ">
+        <DisplayArea />
+      </View>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        snapToInterval={width}
+        decelerationRate="fast"
+        className="flex-1"
+      >
+        <View style={{ width }}>
+          <View className="flex-1 justify-end pb-2 ">
+            <View className="px-6 mb-6">
+              <TransactionTypeSelector />
+            </View>
+            <MetadataSelectors />
+            <KeypadArea />
+          </View>
+        </View>
+        {/* PAGE 2: THE DETAILS */}
+        <View style={{ width }} className="flex-1">
+          <Text className="text-3xl">This is page 2</Text>
+        </View>
+      </ScrollView>
+      <View className="px-6 pb-10">
+        <SaveButton />
       </View>
     </SafeAreaView>
   );
