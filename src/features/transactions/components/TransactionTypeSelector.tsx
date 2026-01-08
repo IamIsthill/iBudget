@@ -1,6 +1,7 @@
 import { TransactionType } from "@/src/db/schema";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { memo } from "react";
+import { useTransactionContext } from "../context/TransactionContext";
 
 const TRANSACTION_TYPES = [
   TransactionType.INCOME,
@@ -8,22 +9,17 @@ const TRANSACTION_TYPES = [
   TransactionType.TRANSFER,
 ] as const;
 
-export const TransactionTypeSelector = memo(function TransactionTypeSelector({
-  setTransactionType,
-  transactionType,
-}: {
-  transactionType: string;
-  setTransactionType: (type: TransactionType) => void;
-}) {
+export const TransactionTypeSelector = memo(function TransactionTypeSelector() {
+  const { changeTransactionType, draft } = useTransactionContext();
   return (
     <View className="flex-row bg-gray-100 p-1.5 rounded-2xl">
       {TRANSACTION_TYPES.map((type) => {
-        const isActive = transactionType === type;
+        const isActive = draft.type === type;
 
         return (
           <Pressable
             key={type}
-            onPress={() => setTransactionType(type)}
+            onPress={() => changeTransactionType(type)}
             style={[styles.button, isActive && styles.activeButton]}
           >
             <Text style={[styles.text, isActive && styles.activeText]}>

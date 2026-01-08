@@ -4,19 +4,16 @@ import { CustomModal } from "@/src/shared/components/Modal";
 import { useState } from "react";
 import { Text, View, Pressable, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-type Props = {
-  necessity: string | Necessity;
-  onSelect: (level: string) => void; // Added onSelect
-};
+import { useTransactionContext } from "../context/TransactionContext";
 
 const necessityLevels = ["Must", "Needs", "Wants"];
 
-export function ListNecessityLevelsModal({ necessity, onSelect }: Props) {
+export function ListNecessityLevelsModal() {
   const [showModal, setShowModal] = useState(false);
+  const { draft, changeNecessity } = useTransactionContext();
 
   const handleSelect = (level: string) => {
-    onSelect(level.toLocaleLowerCase());
+    changeNecessity(level.toLocaleLowerCase() as Necessity);
     setShowModal(false);
   };
 
@@ -24,7 +21,7 @@ export function ListNecessityLevelsModal({ necessity, onSelect }: Props) {
     <>
       <FormChip
         label="Necessity"
-        value={necessity}
+        value={draft.necessity!.toUpperCase()}
         icon="shield-checkmark-outline"
         onPress={() => setShowModal(true)}
       />
@@ -41,7 +38,7 @@ export function ListNecessityLevelsModal({ necessity, onSelect }: Props) {
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {necessityLevels.map((level, index) => {
-              const isSelected = necessity === level;
+              const isSelected = draft.necessity === level;
               return (
                 <View key={level}>
                   <Pressable

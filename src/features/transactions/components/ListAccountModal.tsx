@@ -4,36 +4,41 @@ import { Ionicons } from "@expo/vector-icons";
 import { FormChip } from "./FormChip";
 import { CustomModal } from "@/src/shared/components/Modal";
 import { Account } from "@/src/shared/interfaces";
+import { useTransactionContext } from "../context/TransactionContext";
 
 type Props = {
-  onSelect: (id: string) => void;
   account: Account | null;
-  accounts: Account[];
+  role: "source" | "target";
 };
 
-export function ListAccountModal({ onSelect, account, accounts }: Props) {
+export function ListAccountModal({ account, role }: Props) {
   const [showModal, setShowModal] = useState(false);
+  const { accounts, draft, changeSourceAccount, changeTargetAccount } =
+    useTransactionContext();
 
+  let filteredAccounts = accounts;
+
+  if (role === "target" && draft.fromAccountId) {
+    filteredAccounts = accounts.filter((acc) => acc.id !== draft.fromAccountId);
+  }
+
+  if (role === "source" && draft.toAccountId) {
+    filteredAccounts = accounts.filter((acc) => acc.id !== draft.toAccountId);
+  }
   const handleSelect = (id: string) => {
-    onSelect(id);
+    if (role === "source") {
+      changeSourceAccount(id);
+    } else {
+      changeTargetAccount(id);
+    }
     setShowModal(false);
   };
-
-  if (!account)
-    return (
-      <FormChip
-        label="Account"
-        value="Loading..."
-        icon="wallet-outline"
-        onPress={() => {}}
-      />
-    );
 
   return (
     <>
       <FormChip
         label="Account"
-        value={account.name}
+        value={account ? account.name : "Choose an Account"}
         icon="wallet-outline"
         onPress={() => setShowModal(true)}
       />
@@ -53,8 +58,12 @@ export function ListAccountModal({ onSelect, account, accounts }: Props) {
             showsVerticalScrollIndicator={true}
             className="max-h-[200px]"
           >
-            {accounts.map((item, index) => {
-              const isSelected = item.id === account.id;
+            {filteredAccounts.map((item, index) => {
+              let isSelected = false;
+              if (account) {
+                isSelected = item.id === account.id;
+              }
+
               return (
                 <View key={item.id}>
                   <Pressable

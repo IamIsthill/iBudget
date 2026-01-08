@@ -1,5 +1,3 @@
-import { Necessity } from "../db/schema";
-
 export interface Account {
   id: string;
   name: string;
@@ -10,14 +8,14 @@ export interface Account {
 export interface Category {
   id: string;
   name: string;
-  necessity: null | Necessity | string;
+  necessity: string | null;
 }
 
 export interface Transaction {
   id: string;
   accountId: string;
-  categoryId?: string | null;
-  necessity?: string | null;
+  categoryId: string | null;
+  necessity: string | null;
   amount: number;
   type: string;
   date: number;

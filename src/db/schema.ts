@@ -26,7 +26,7 @@ export const accountsTable = d.sqliteTable("accounts", {
 export const categoriesTable = d.sqliteTable("categories", {
   id: d.text("id").primaryKey().notNull(),
   name: d.text("name").notNull().unique(),
-  necessity: d.text("necessity").default(""), // 'must' | 'needs' | 'wants'
+  necessity: d.text("necessity"), // 'must' | 'needs' | 'wants'
 });
 
 export const transactionsTable = d.sqliteTable("transactions", {
@@ -63,7 +63,22 @@ export const categoryTransactionsRelation = relations(
   })
 );
 
-export const transactionRelations = relations(transactionsTable, ({ one }) => ({
-  account: one(accountsTable),
-  category: one(categoriesTable),
-}));
+export const transactionsRelations = relations(
+  transactionsTable,
+  ({ one }) => ({
+    fromAccount: one(accountsTable, {
+      fields: [transactionsTable.fromAccountId],
+      references: [accountsTable.id],
+      relationName: "fromAccount",
+    }),
+    toAccount: one(accountsTable, {
+      fields: [transactionsTable.toAccountId],
+      references: [accountsTable.id],
+      relationName: "toAccount",
+    }),
+    category: one(categoriesTable, {
+      fields: [transactionsTable.categoryId],
+      references: [categoriesTable.id],
+    }),
+  })
+);

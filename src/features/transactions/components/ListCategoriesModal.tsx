@@ -4,35 +4,26 @@ import { useState } from "react";
 import { FormChip } from "./FormChip";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTransactionContext } from "../context/TransactionContext";
 
-type Props = {
-  onSelect: (id: string) => void;
-  category: Category | null;
-  categories: Category[];
-  disabled?: boolean;
-};
-
-export function ListCategoriesModal({
-  category,
-  onSelect,
-  categories,
-  disabled,
-}: Props) {
+export function ListCategoriesModal() {
   const [showModal, setShowModal] = useState(false);
+  const { categories, chosenCategory, changeCategory } =
+    useTransactionContext();
 
   const handleSelect = (id: string) => {
-    onSelect(id);
+    changeCategory(id);
     setShowModal(false);
   };
 
-  if (!category) {
+  if (!chosenCategory) {
     return (
       <FormChip
         label="Category"
         value="Loading..."
         icon="barcode-outline"
         onPress={() => {}}
-        disabled={disabled}
+        // disabled={disabled}
       />
     );
   }
@@ -41,7 +32,7 @@ export function ListCategoriesModal({
     <>
       <FormChip
         label="Category"
-        value={category.name}
+        value={chosenCategory.name}
         icon="barcode-sharp"
         onPress={() => setShowModal(true)}
       />
@@ -61,7 +52,7 @@ export function ListCategoriesModal({
             className="max-h-[400px]"
           >
             {categories.map((item, index) => {
-              const isSelected = item.id === category.id;
+              const isSelected = item.id === chosenCategory.id;
               return (
                 <View key={item.id}>
                   <CategoryItem
