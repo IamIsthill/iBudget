@@ -1,38 +1,89 @@
 import { Stack } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { useDatabaseSetup } from "../db";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ToastProvider } from "../shared/components/Toast";
-// import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const { ready, error } = useDatabaseSetup();
 
-  if (error) {
+  // Unified wrapper for initialization states
+  if (error || !ready) {
     return (
-      <View className="flex justify-center align-middle">
-        <Text>Database error: {error.message}</Text>;
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 24,
+        }}
+      >
+        <StatusBar style="dark" />
+        {error ? (
+          <>
+            <Text
+              style={{ fontSize: 18, fontWeight: "bold", color: "#111827" }}
+            >
+              Initialization Failed
+            </Text>
+            <Text
+              style={{ color: "#6b7280", textAlign: "center", marginTop: 8 }}
+            >
+              {error.message}
+            </Text>
+          </>
+        ) : (
+          <>
+            <ActivityIndicator size="small" color="#2563eb" />
+            <Text
+              style={{
+                color: "#6b7280",
+                marginTop: 16,
+                fontWeight: "500",
+                letterSpacing: 0.5,
+              }}
+            >
+              PREPARING DATABASE
+            </Text>
+          </>
+        )}
       </View>
-    );
-  }
-
-  if (!ready) {
-    return (
-      <Text className="flex justify-center align-middle">
-        Setting up database...
-      </Text>
     );
   }
 
   return (
     <SafeAreaProvider>
       <ToastProvider>
-        <Stack>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerShadowVisible: false,
+            headerTintColor: "#111827",
+          }}
+        >
+          {/* Main App */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="accounts/[accountId]" options={{ title: "" }} />
+
+          {/* Account Details */}
+          <Stack.Screen
+            name="accounts/[accountId]"
+            options={{
+              title: "Account",
+              headerTitleStyle: { fontWeight: "600" },
+            }}
+          />
+
+          {/* Create Transaction */}
           <Stack.Screen
             name="transactions/add"
-            options={{ title: "", presentation: "card" }}
+            options={{
+              title: "",
+              presentation: "modal",
+              headerShadowVisible: false,
+              headerTitleStyle: { fontWeight: "600" },
+            }}
           />
         </Stack>
       </ToastProvider>
