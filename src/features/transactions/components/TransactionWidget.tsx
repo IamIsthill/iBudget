@@ -56,31 +56,65 @@ export function TransactionWidget() {
 function TransactionItem({ item }: { item: any }) {
   const isExpense = item.type === "expense";
   const isTransfer = item.type === "transfer";
+  const isIncome = item.type === "income";
 
-  // Use Description if available, otherwise use Category Name, otherwise fallback
-  const displayName =
-    item.description || item.category?.name || "Uncategorized";
+  // Functional Icon Logic using Ionicons
+  const getTypeIcon = () => {
+    if (isTransfer) return "swap-horizontal";
+    if (isIncome) return "arrow-down-circle";
+    return "card-outline"; // Expense
+  };
 
-  // Subtitle showing the Account source (and destination if transfer)
-  const accountInfo = isTransfer
-    ? `${item.fromAccount?.name} → ${item.toAccount?.name}`
-    : item.fromAccount?.name || "Unknown Account";
+  const getIconColor = () => {
+    if (isTransfer) return "#2563eb"; // Blue
+    if (isIncome) return "#16a34a"; // Green
+    return "#4b5563"; // Gray/Black
+  };
 
   return (
-    <Pressable className="flex-row items-center justify-between py-5 active:opacity-50">
-      <View className="flex-1 mr-4">
-        <Text className="text-lg font-medium text-gray-900" numberOfLines={1}>
-          {displayName}
-        </Text>
-        <Text className="text-sm text-gray-400" numberOfLines={1}>
-          {accountInfo} •{" "}
-          {new Date(item.date).toLocaleDateString("en-PH", {
-            month: "short",
-            day: "numeric",
-          })}
-        </Text>
+    <Pressable className="flex-row items-center py-5 active:opacity-50">
+      {/* 1. Leading Icon Area */}
+      <View
+        className={`w-12 h-12 rounded-2xl items-center justify-center mr-4 ${
+          isTransfer ? "bg-blue-50" : isIncome ? "bg-green-50" : "bg-gray-50"
+        }`}
+      >
+        <Ionicons name={getTypeIcon()} size={22} color={getIconColor()} />
       </View>
 
+      {/* 2. Transaction Details */}
+      <View className="flex-1">
+        <Text className="text-lg font-bold text-gray-900" numberOfLines={1}>
+          {isTransfer ? "Transfer" : item.category?.name || "Uncategorized"}
+        </Text>
+
+        {isTransfer ? (
+          <View className="flex-row items-center mt-0.5">
+            <Text className="text-sm font-medium text-gray-500">
+              {item.fromAccount?.name}
+            </Text>
+            <Ionicons
+              name="arrow-forward"
+              size={12}
+              color="#9ca3af"
+              style={{ marginHorizontal: 4 }}
+            />
+            <Text className="text-sm font-medium text-gray-500">
+              {item.toAccount?.name}
+            </Text>
+          </View>
+        ) : (
+          <Text className="text-sm text-gray-400 mt-0.5">
+            {item.fromAccount?.name} •{" "}
+            {new Date(item.date).toLocaleDateString("en-PH", {
+              month: "short",
+              day: "numeric",
+            })}
+          </Text>
+        )}
+      </View>
+
+      {/* 3. Amount and Metadata */}
       <View className="items-end">
         <Text
           className={`text-lg font-bold ${
@@ -91,22 +125,19 @@ function TransactionItem({ item }: { item: any }) {
                 : "text-green-600"
           }`}
         >
-          {isTransfer ? "" : isExpense ? "" : "+"}
+          {isIncome ? "+" : ""}
           {Number(item.amount).toLocaleString("en-PH", {
             minimumFractionDigits: 2,
           })}
         </Text>
 
-        {/* Priority: Show Necessity Tag, else show Type if it's a Transfer */}
-        {item.necessity ? (
-          <Text className="text-[10px] uppercase font-bold text-gray-400 tracking-tighter">
-            {item.necessity}
-          </Text>
-        ) : isTransfer ? (
-          <Text className="text-[10px] uppercase font-bold text-blue-500 tracking-tighter">
-            Transfer
-          </Text>
-        ) : null}
+        {item.necessity && !isTransfer && (
+          <View className="bg-gray-100 px-2 py-0.5 rounded-md mt-1">
+            <Text className="text-[9px] uppercase font-bold text-gray-500 tracking-tighter">
+              {item.necessity}
+            </Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );

@@ -16,7 +16,7 @@ export function PageIndicator({ activeIndex }: PageIndicatorProps) {
       friction: 8,
       tension: 50,
     }).start();
-  }, [activeIndex]);
+  }, [activeIndex, scrollAnim]);
 
   // Interpolate width: when index is 0, dot 1 is 24px. When index is 1, it's 6px.
   const dot1Width = scrollAnim.interpolate({
