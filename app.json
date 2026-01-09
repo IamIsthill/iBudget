@@ -18,7 +18,8 @@
         "monochromeImage": "./src/assets/icons/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.iamisthill.iBudget"
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +46,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "75a48272-46fb-4eca-8764-426bdc087c8a"
+      }
+    },
+    "owner": "iamisthill"
   }
 }
