@@ -91,7 +91,7 @@ function TransactionItem({ item }: { item: any }) {
         {isTransfer ? (
           <View className="flex-row items-center mt-0.5">
             <Text className="text-sm font-medium text-gray-500">
-              {item.fromAccount?.name}
+              {item.fromAccount?.name ?? "[Deleted]"}
             </Text>
             <Ionicons
               name="arrow-forward"
@@ -100,12 +100,12 @@ function TransactionItem({ item }: { item: any }) {
               style={{ marginHorizontal: 4 }}
             />
             <Text className="text-sm font-medium text-gray-500">
-              {item.toAccount?.name}
+              {item.toAccount?.name ?? "[Deleted]"}
             </Text>
           </View>
         ) : (
           <Text className="text-sm text-gray-400 mt-0.5">
-            {item.fromAccount?.name} •{" "}
+            {item.fromAccount?.name ?? "[Deleted]"} •{" "}
             {new Date(item.date).toLocaleDateString("en-PH", {
               month: "short",
               day: "numeric",

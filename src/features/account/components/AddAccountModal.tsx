@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Pressable, Text, TextInput, View, Switch, Alert } from "react-native";
+import { Pressable, Text, TextInput, View, Switch } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CustomModal } from "@/src/shared/components/Modal";
-import { AccountDB } from "@/src/db";
 import { AppError } from "@/src/shared/error";
+import { useToast } from "@/src/shared/components/Toast";
+import { AccountCommands } from "../account.commands";
 
-export function AddAccountModal() {
-  const [showModal, setShowModal] = useState(false);
+type Props = {
+  showModal: boolean;
+  setShowModal: (b: boolean) => void;
+};
+
+export function AddAccountModal({ showModal, setShowModal }: Props) {
+  const { showToast } = useToast();
 
   const [form, setForm] = useState({
     name: "",
@@ -23,16 +29,19 @@ export function AddAccountModal() {
       if (isNaN(balance) || balance < 0) {
         throw new AppError("Balance must be a positive number");
       }
-      await AccountDB.add({ ...form, balance: parseInt(form.balance) });
+      await AccountCommands.createAccount({
+        ...form,
+        balance: parseInt(form.balance),
+      });
 
       setShowModal(false);
       setForm({ name: "", balance: "", isDefault: false });
+      showToast("Successfully added a new account", "success");
     } catch (err) {
-      console.log(err);
       if (err instanceof AppError) {
-        alert(err.message);
+        showToast(err.message, "info");
       } else {
-        alert("Failed to add new account");
+        showToast("Failed to add new account", "error");
       }
     }
   };
