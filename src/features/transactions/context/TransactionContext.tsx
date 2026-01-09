@@ -39,6 +39,8 @@ type TransactionContextValue = {
   changeTargetAccount: (toAccountId: string) => void;
   changeAmount: (amount: string) => void;
   saveTransaction: () => Promise<void>;
+  changeNote: (note: string) => void;
+  changeDate: (date: Date) => void;
 };
 
 const TransactionContext = createContext<TransactionContextValue | null>(null);
@@ -115,6 +117,14 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
     setDraft((prev) => ({ ...prev, amount }));
   }
 
+  function changeNote(note: string) {
+    setDraft((prev) => ({ ...prev, description: note }));
+  }
+
+  function changeDate(date: Date) {
+    setDraft((prev) => ({ ...prev, date: Number(date) }));
+  }
+
   async function saveTransaction() {
     try {
       const amount = parseInt(draft.amount);
@@ -171,6 +181,8 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
         changeTransactionType,
         changeTargetAccount,
         changeAmount,
+        changeNote,
+        changeDate,
       }}
     >
       {children}

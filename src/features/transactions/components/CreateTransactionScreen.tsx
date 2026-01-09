@@ -1,12 +1,22 @@
-import { View, Text, Dimensions, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { formatPeso } from "../utils";
 import { useTransactionContext } from "../context/TransactionContext";
 import { KeypadArea } from "./KeypadArea";
 import { MetadataSelectors } from "./MetadataSelectors";
-import { Ionicons } from "@expo/vector-icons";
 import { SaveButton } from "./SaveButton";
+import { TransactionDetailPage } from "./TransactionDetailPage";
+import { useEffect, useState } from "react";
+import { PageIndicator } from "./PageIndicator";
 
 const { width } = Dimensions.get("window");
 
@@ -26,48 +36,61 @@ export function DisplayArea() {
           </Text>
         </View>
       </View>
-
-      {/* Subtle Hint */}
-      <View className="flex-row items-center opacity-20">
-        <Text className="text-[10px] font-bold tracking-widest mr-2">
-          MORE DETAILS
-        </Text>
-        <Ionicons name="arrow-forward" size={12} color="#000" />
-      </View>
     </View>
   );
 }
 
 export function CreateTransactionScreen() {
+  const [pageIndex, setPageIndex] = useState(0);
+
+  useEffect(() => {
+    if (pageIndex === 0) {
+      Keyboard.dismiss();
+    }
+  }, [pageIndex]);
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={[]}>
-      <View className="py-4 ">
-        <DisplayArea />
-      </View>
-      <ScrollView
-        horizontal
-        pagingEnabled
-        snapToInterval={width}
-        decelerationRate="fast"
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
+        keyboardVerticalOffset={180}
       >
-        <View style={{ width }}>
-          <View className="flex-1 justify-end pb-2 ">
+        <View className="py-4">
+          <DisplayArea />
+        </View>
+        <ScrollView
+          horizontal
+          pagingEnabled
+          snapToInterval={width}
+          decelerationRate="fast"
+          className="flex-1"
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          onMomentumScrollEnd={(event) => {
+            const offsetX = event.nativeEvent.contentOffset.x;
+            const index = Math.round(offsetX / width);
+            setPageIndex(index);
+          }}
+        >
+          <View style={{ width }} className="flex-1 justify-end pb-2 ">
             <View className="px-6 mb-6">
               <TransactionTypeSelector />
             </View>
             <MetadataSelectors />
             <KeypadArea />
           </View>
+          <View style={{ width }} className="flex-1">
+            <View className="flex-1 px-6 pt-4">
+              <TransactionDetailPage />
+            </View>
+          </View>
+        </ScrollView>
+        <View className="px-6 pb-10">
+          <PageIndicator activeIndex={pageIndex} />
+          <SaveButton />
         </View>
-        {/* PAGE 2: THE DETAILS */}
-        <View style={{ width }} className="flex-1">
-          <Text className="text-3xl">This is page 2</Text>
-        </View>
-      </ScrollView>
-      <View className="px-6 pb-10">
-        <SaveButton />
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
