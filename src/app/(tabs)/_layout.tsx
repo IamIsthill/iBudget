@@ -9,7 +9,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: "blue",
         tabBarInactiveTintColor: "gray",
-        // headerShown: false,
+        headerShown: false,
         tabBarStyle: {
           height: 64,
           // backgroundColor: "sky-blue",
@@ -19,7 +19,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "",
           tabBarIcon: ({ focused, size, color }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -45,7 +45,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: "",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "settings" : "settings-outline"}

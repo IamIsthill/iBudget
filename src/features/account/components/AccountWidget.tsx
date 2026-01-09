@@ -1,9 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AddAccountModal } from "./AddAccountModal";
-import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { router } from "expo-router";
-import { AccountQueries } from "../account.queries";
 import { useState } from "react";
 import { Account } from "@/src/shared/interfaces";
 import { useAccountWidgetContext } from "../context/AccountWidgetContext";
