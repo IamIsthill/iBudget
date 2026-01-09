@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { db } from "@/src/db";
 import { accountsTable, transactionsTable } from "@/src/db/schema";
 import { useEffect } from "react";
+import { router } from "expo-router";
 
 export default function Settings() {
   const appVersion = Application.nativeApplicationVersion || "1.0.0";
@@ -20,6 +21,7 @@ export default function Settings() {
           onPress: async () => {
             await db.delete(accountsTable);
             await db.delete(transactionsTable);
+            router.back();
           },
         },
       ]
