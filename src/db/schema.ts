@@ -41,7 +41,6 @@ export const transactionsTable = d.sqliteTable("transactions", {
   categoryId: d
     .text("categoryId")
     .references(() => categoriesTable.id, { onDelete: "set null" }),
-  necessity: d.text("necessity"), // 'must' | 'needs' | 'wants'
   amount: d.integer().notNull(), // positive for income, negative for expense
   type: d.text("type").notNull(), // 'income' | 'expense' | 'transfer'
   date: d.integer("date").notNull(), // timestamp

@@ -133,12 +133,12 @@ export function ListAccountModal({ account, role }: Props) {
           </ScrollView>
 
           {/* Close Button */}
-          <Pressable
+          {/* <Pressable
             onPress={() => setShowModal(false)}
             className="mt-8 bg-gray-900 py-5 rounded-[32px] items-center active:opacity-90"
           >
             <Text className="text-white font-bold text-lg">Go Back</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </CustomModal>
     </>

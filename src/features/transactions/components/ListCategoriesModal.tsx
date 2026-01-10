@@ -71,12 +71,12 @@ export function ListCategoriesModal() {
           </ScrollView>
 
           {/* Close Button - Following your standard */}
-          <Pressable
+          {/* <Pressable
             onPress={() => setShowModal(false)}
             className="mt-6 bg-gray-700 py-4 rounded-2xl items-center"
           >
             <Text className="text-white font-bold text-lg">Close</Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </CustomModal>
     </>

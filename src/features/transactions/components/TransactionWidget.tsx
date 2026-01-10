@@ -2,6 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { TransactionQueries } from "../transaction.queries";
+import { HydratedTransaction } from "@/src/shared/interfaces";
 
 // EmptyState remains the same as your standard
 function EmptyState() {
@@ -53,7 +54,7 @@ export function TransactionWidget() {
   );
 }
 
-function TransactionItem({ item }: { item: any }) {
+function TransactionItem({ item }: { item: HydratedTransaction }) {
   const isExpense = item.type === "expense";
   const isTransfer = item.type === "transfer";
   const isIncome = item.type === "income";
@@ -131,10 +132,10 @@ function TransactionItem({ item }: { item: any }) {
           })}
         </Text>
 
-        {item.necessity && !isTransfer && (
+        {!isTransfer && item.category && (
           <View className="bg-gray-100 px-2 py-0.5 rounded-md mt-1">
             <Text className="text-[9px] uppercase font-bold text-gray-500 tracking-tighter">
-              {item.necessity}
+              {item.category?.necessity}
             </Text>
           </View>
         )}

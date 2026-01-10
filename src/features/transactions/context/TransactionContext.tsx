@@ -9,7 +9,7 @@ import {
 } from "react";
 import { TransactionQueries } from "../transaction.queries";
 import { Account, Category } from "@/src/shared/interfaces";
-import { Necessity, TransactionType } from "@/src/db/schema";
+import { TransactionType } from "@/src/db/schema";
 import { AppError } from "@/src/shared/error";
 import { useToast } from "@/src/shared/components/Toast";
 import { TransactionCommands } from "../transaction.command";
@@ -19,7 +19,6 @@ type TransactionDraft = {
   fromAccountId: string | null;
   toAccountId: string | null;
   categoryId: string | null;
-  necessity: Necessity | null;
   type: TransactionType;
   date: number;
   description: string;
@@ -34,7 +33,6 @@ type TransactionContextValue = {
   chosenCategory: Category | null;
   changeSourceAccount: (fromAccountId: string) => void;
   changeCategory: (categoryId: string) => void;
-  changeNecessity: (necessity: Necessity) => void;
   changeTransactionType: (type: TransactionType) => void;
   changeTargetAccount: (toAccountId: string) => void;
   changeAmount: (amount: string) => void;
@@ -54,7 +52,6 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
     categoryId: null,
     date: Date.now(),
     description: "",
-    necessity: Necessity.NEEDS,
     type: TransactionType.EXPENSE,
   });
 
@@ -105,10 +102,6 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
     setDraft((prev) => ({ ...prev, categoryId }));
   }
 
-  function changeNecessity(necessity: Necessity) {
-    setDraft((prev) => ({ ...prev, necessity }));
-  }
-
   function changeTransactionType(type: TransactionType) {
     setDraft((prev) => ({ ...prev, type }));
   }
@@ -136,7 +129,6 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
         fromAccountId: draft.fromAccountId!,
         type: draft.type,
         categoryId: draft.categoryId ?? undefined,
-        necessity: draft.necessity ?? undefined,
         toAccountId: draft.toAccountId ?? undefined,
       });
 
@@ -160,7 +152,6 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
       categoryId: null,
       date: Date.now(),
       description: "",
-      necessity: Necessity.NEEDS,
       type: TransactionType.EXPENSE,
     });
   }
@@ -177,7 +168,6 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
         saveTransaction,
         changeSourceAccount,
         changeCategory,
-        changeNecessity,
         changeTransactionType,
         changeTargetAccount,
         changeAmount,

@@ -1,7 +1,6 @@
 import { db } from "@/src/db";
 import {
   accountsTable,
-  Necessity,
   transactionsTable,
   TransactionType,
 } from "@/src/db/schema";
@@ -91,7 +90,6 @@ export class TransactionCommands {
     fromAccountId,
     type,
     categoryId,
-    necessity,
     toAccountId,
   }: CreateTransaction) {
     switch (type) {
@@ -100,6 +98,7 @@ export class TransactionCommands {
           throw new AppError(
             "categoryId is required for an Income Transaction"
           );
+
         return await TransactionCommands.createIncome({
           amount,
           categoryId,
@@ -113,18 +112,12 @@ export class TransactionCommands {
         if (!categoryId)
           throw new AppError("Category is required for an Expense Transaction");
 
-        if (!necessity) {
-          throw new AppError(
-            "Necessity is required for an Expense Transaction"
-          );
-        }
         return await TransactionCommands.createExpense({
           amount,
           categoryId,
           date,
           description,
           fromAccountId,
-          necessity,
         });
       }
 
@@ -150,7 +143,6 @@ interface CreateTransaction {
   fromAccountId: string;
   toAccountId?: string;
   categoryId?: string;
-  necessity?: Necessity;
   amount: number;
   type: TransactionType;
   date: number;
@@ -160,7 +152,6 @@ interface CreateTransaction {
 interface CreateExpenseTransaction {
   fromAccountId: string;
   categoryId: string;
-  necessity: Necessity;
   amount: number;
   date: number;
   description: string;
