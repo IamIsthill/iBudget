@@ -1,8 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { AddAccountModal } from "./AddAccountModal";
 import { router } from "expo-router";
-import { useState } from "react";
 import { Account } from "@/src/shared/interfaces";
 import { useAccountWidgetContext } from "../context/AccountWidgetContext";
 
@@ -45,12 +43,12 @@ function HeroAccount({ account }: { account: Account }) {
 // function SecondaryAccountList
 
 export function AccountWidget() {
-  const [showModal, setShowModal] = useState(false);
   const { accounts, secondaryAccounts, defaultAccount } =
     useAccountWidgetContext();
-  // const { data: accounts } = useLiveQuery(AccountQueries.getAccounts());
-  // const defaultAccount = accounts?.find((acc) => acc.isDefault) || null;
-  // const filteredAccounts = accounts?.filter((acc) => !acc.isDefault) || [];
+
+  function goToAddAccountScreen() {
+    router.push("/accounts/add");
+  }
 
   return (
     <View className="bg-white rounded-[32px] p-6 m-4 shadow-sm border border-gray-50">
@@ -62,7 +60,11 @@ export function AccountWidget() {
             {accounts?.length || 0} ACTIVE WALLETS
           </Text>
         </View>
-        <AddAccountModal showModal={showModal} setShowModal={setShowModal} />
+        <View>
+          <Pressable onPress={goToAddAccountScreen}>
+            <Ionicons name="add-circle" size={28} color={"#2563eb"} />
+          </Pressable>
+        </View>
       </View>
 
       {/* Main Content Area */}
@@ -116,7 +118,7 @@ export function AccountWidget() {
         </View>
       ) : (
         /* EMPTY STATE */
-        <Pressable onPress={() => setShowModal(true)}>
+        <Pressable onPress={goToAddAccountScreen}>
           <View className="py-10 items-center bg-gray-50 rounded-[24px] border border-dashed border-gray-200">
             <Ionicons name="add-circle-outline" size={32} color="#9ca3af" />
             <Text className="text-gray-400 font-medium mt-2">

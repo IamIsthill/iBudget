@@ -66,11 +66,19 @@ export default function RootLayout() {
           {/* Main App */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
+          <Stack.Screen
+            name="accounts/add"
+            options={{
+              title: "",
+              presentation: "containedTransparentModal",
+              headerShadowVisible: false,
+            }}
+          />
           {/* Account Details */}
           <Stack.Screen
             name="accounts/[accountId]"
             options={{
-              title: "Account",
+              title: "",
               headerTitleStyle: { fontWeight: "600" },
             }}
           />
