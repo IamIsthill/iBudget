@@ -3,6 +3,9 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { TransactionQueries } from "../transaction.queries";
 import { HydratedTransaction } from "@/src/shared/interfaces";
+import { router } from "expo-router";
+import { TransactionIcon } from "./TransactionIcon";
+import { TransactionType } from "@/src/db/schema";
 
 // EmptyState remains the same as your standard
 function EmptyState() {
@@ -25,13 +28,17 @@ export function TransactionWidget() {
   );
   const displayedTransactions = transactions.slice(0, 5);
 
+  function goToTransactionList() {
+    router.push("/transactions");
+  }
+
   return (
     <View className="bg-white rounded-[32px] p-6 m-4 shadow-sm border border-gray-50 flex-1 min-h-[400px]">
       <View className="flex-row justify-between items-center mb-6">
         <Text className="text-2xl font-bold text-gray-900">
           Recent Activity
         </Text>
-        <Pressable className="active:opacity-50">
+        <Pressable className="active:opacity-50" onPress={goToTransactionList}>
           <Text className="text-blue-600 font-bold">See All</Text>
         </Pressable>
       </View>
@@ -59,28 +66,11 @@ function TransactionItem({ item }: { item: HydratedTransaction }) {
   const isTransfer = item.type === "transfer";
   const isIncome = item.type === "income";
 
-  // Functional Icon Logic using Ionicons
-  const getTypeIcon = () => {
-    if (isTransfer) return "swap-horizontal";
-    if (isIncome) return "arrow-down-circle";
-    return "card-outline"; // Expense
-  };
-
-  const getIconColor = () => {
-    if (isTransfer) return "#2563eb"; // Blue
-    if (isIncome) return "#16a34a"; // Green
-    return "#4b5563"; // Gray/Black
-  };
-
   return (
     <Pressable className="flex-row items-center py-5 active:opacity-50">
       {/* 1. Leading Icon Area */}
-      <View
-        className={`w-12 h-12 rounded-2xl items-center justify-center mr-4 ${
-          isTransfer ? "bg-blue-50" : isIncome ? "bg-green-50" : "bg-gray-50"
-        }`}
-      >
-        <Ionicons name={getTypeIcon()} size={22} color={getIconColor()} />
+      <View className="mr-4">
+        <TransactionIcon type={item.type as TransactionType} />
       </View>
 
       {/* 2. Transaction Details */}

@@ -4,6 +4,7 @@ import { useDatabaseSetup } from "../db";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ToastProvider } from "../shared/components/Toast";
 import { StatusBar } from "expo-status-bar";
+import { TransactionListProvider } from "../features/transactions";
 
 export default function RootLayout() {
   const { ready, error } = useDatabaseSetup();
@@ -56,44 +57,56 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ToastProvider>
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerShadowVisible: false,
-            headerTintColor: "#111827",
-          }}
-        >
-          {/* Main App */}
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-          <Stack.Screen
-            name="accounts/add"
-            options={{
-              title: "",
-              presentation: "containedTransparentModal",
+        <TransactionListProvider>
+          <StatusBar style="dark" />
+          <Stack
+            screenOptions={{
               headerShadowVisible: false,
+              headerTintColor: "#111827",
             }}
-          />
-          {/* Account Details */}
-          <Stack.Screen
-            name="accounts/[accountId]"
-            options={{
-              title: "",
-              headerTitleStyle: { fontWeight: "600" },
-            }}
-          />
+          >
+            {/* Main App */}
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-          {/* Create Transaction */}
-          <Stack.Screen
-            name="transactions/add"
-            options={{
-              title: "",
-              presentation: "modal",
-              headerShadowVisible: false,
-              headerTitleStyle: { fontWeight: "600" },
-            }}
-          />
-        </Stack>
+            <Stack.Screen
+              name="accounts/add"
+              options={{
+                title: "",
+                presentation: "containedTransparentModal",
+                headerShadowVisible: false,
+              }}
+            />
+            {/* Account Details */}
+            <Stack.Screen
+              name="accounts/[accountId]"
+              options={{
+                title: "",
+                headerTitleStyle: { fontWeight: "600" },
+              }}
+            />
+
+            <Stack.Screen
+              name="transactions/index"
+              options={{
+                title: "",
+                headerShown: false,
+                presentation: "modal",
+              }}
+            />
+
+            {/* Create Transaction */}
+            <Stack.Screen
+              name="transactions/add"
+              options={{
+                title: "",
+                presentation: "modal",
+
+                headerShadowVisible: false,
+                headerTitleStyle: { fontWeight: "600" },
+              }}
+            />
+          </Stack>
+        </TransactionListProvider>
       </ToastProvider>
     </SafeAreaProvider>
   );
