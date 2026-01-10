@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useEffect, useRef, PropsWithChildren, useState } from "react";
+import { useEffect, useRef, PropsWithChildren, useState } from "react";
 
 export function ModalBackdrop({
   onPress,
@@ -55,7 +55,7 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 export function CustomModal({ visible, onClose, children }: CustomModalProps) {
   // This state keeps the Modal alive during the exit animation
-  const [shouldRender, setShouldRender] = React.useState(visible);
+  const [shouldRender, setShouldRender] = useState(visible);
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function CustomModal({ visible, onClose, children }: CustomModalProps) {
         setShouldRender(false); // FINALLY unmount after animation finishes
       });
     }
-  }, [visible]);
+  }, [visible, slideAnim]);
 
   if (!shouldRender) return null;
 
@@ -93,7 +93,7 @@ export function CustomModal({ visible, onClose, children }: CustomModalProps) {
         <ModalBackdrop visible={visible} onPress={onClose} />
 
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <Animated.View
             style={{ transform: [{ translateY: slideAnim }] }}
