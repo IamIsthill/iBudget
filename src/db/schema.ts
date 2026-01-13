@@ -27,6 +27,7 @@ export const categoriesTable = d.sqliteTable("categories", {
   id: d.text("id").primaryKey().notNull(),
   name: d.text("name").notNull().unique(),
   necessity: d.text("necessity"), // 'must' | 'needs' | 'wants'
+  transactionType: d.text("transactionType"), // can only be income | expense
 });
 
 export const transactionsTable = d.sqliteTable("transactions", {
