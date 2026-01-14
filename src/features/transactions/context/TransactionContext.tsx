@@ -69,10 +69,21 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
       }));
     }
 
-    if (!draft.categoryId && categories.length > 0) {
-      setDraft((prev) => ({ ...prev, categoryId: categories[0].id }));
+    if (
+      !draft.categoryId &&
+      categories.length > 0 &&
+      draft.type !== TransactionType.TRANSFER
+    ) {
+      const filteredCategories = categories.filter(
+        (cat) => cat.transactionType === draft.type
+      );
+      setDraft((prev) => ({
+        ...prev,
+        categoryId: filteredCategories[0].id,
+      }));
+      // setDraft((prev) => ({ ...prev, categoryId: categories[0].id }));
     }
-  }, [accounts, draft.fromAccountId, categories, draft.categoryId]);
+  }, [accounts, draft.fromAccountId, categories, draft.categoryId, draft.type]);
 
   const lastValidSourceAccount = useRef<Account | null>(null);
   const sourceAccount = (() => {
@@ -103,7 +114,23 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
   }
 
   function changeTransactionType(type: TransactionType) {
-    setDraft((prev) => ({ ...prev, type }));
+    if (type === TransactionType.TRANSFER) {
+      setDraft((prev) => ({ ...prev, type, categoryId: null }));
+      return;
+    }
+    // Check if new type is the same as the chosen category
+    if (type !== chosenCategory?.transactionType) {
+      const filteredCategories = categories.filter(
+        (cat) => cat.transactionType === type
+      );
+      setDraft((prev) => ({
+        ...prev,
+        type,
+        categoryId: filteredCategories[0].id,
+      }));
+    } else {
+      setDraft((prev) => ({ ...prev, type }));
+    }
   }
 
   function changeAmount(amount: string) {

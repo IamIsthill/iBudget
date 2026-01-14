@@ -9,6 +9,7 @@ export interface Category {
   id: string;
   name: string;
   necessity: string | null;
+  transactionType: string | null;
 }
 
 export interface Transaction {

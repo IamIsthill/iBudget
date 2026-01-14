@@ -11,10 +11,16 @@ export function useDatabaseSetup() {
   useEffect(() => {
     if (!success) return;
 
-    (async () => {
-      await seedData();
-      setReady(true);
-    })();
+    const setup = async () => {
+      try {
+        await seedData();
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setReady(true);
+      }
+    };
+    setup();
   }, [success]);
 
   return { ready, error };

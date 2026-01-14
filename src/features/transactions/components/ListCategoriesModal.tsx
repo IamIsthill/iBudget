@@ -8,7 +8,7 @@ import { useTransactionContext } from "../context/TransactionContext";
 
 export function ListCategoriesModal() {
   const [showModal, setShowModal] = useState(false);
-  const { categories, chosenCategory, changeCategory } =
+  const { categories, chosenCategory, changeCategory, draft } =
     useTransactionContext();
 
   const handleSelect = (id: string) => {
@@ -27,6 +27,10 @@ export function ListCategoriesModal() {
       />
     );
   }
+
+  const filteredCategories = categories.filter(
+    (cat) => cat.transactionType === draft.type
+  );
 
   return (
     <>
@@ -51,7 +55,7 @@ export function ListCategoriesModal() {
             showsVerticalScrollIndicator={true}
             className="max-h-[400px]"
           >
-            {categories.map((item, index) => {
+            {filteredCategories.map((item, index) => {
               const isSelected = item.id === chosenCategory.id;
               return (
                 <View key={item.id}>
